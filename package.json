@@ -1,19 +1,30 @@
 {
-  "name": "bingkai",
+  "name": "pasfotoin",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@imgly/background-removal": "^1.7.0",
+    "@use-gesture/react": "^10.3.1",
+    "fflate": "^0.8.3",
+    "idb-keyval": "^6.3.0",
+    "lucide-react": "^1.53.0",
     "next": "16.4.0",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-colorful": "^5.8.1",
+    "react-dom": "19.3.0",
+    "sonner": "^2.0.8",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -21,6 +32,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   }
 }
