@@ -6,7 +6,7 @@
  * Thumbnail disimpan terpisah dari foto sumber (kecil, JPEG) sehingga daftar
  * riwayat bisa menampilkan pratinjau nyata tanpa memuat foto berukuran penuh.
  * Bila thumbnail tidak ada (proyek lama atau sudah dihapus), tampilkan ikon
- * netral — bukan kotak kosong yang membingungkan.
+ * netral, bukan kotak kosong yang membingungkan.
  */
 import { useEffect, useState } from "react";
 import { Image as ImageIcon } from "lucide-react";

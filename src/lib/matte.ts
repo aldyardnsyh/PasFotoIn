@@ -27,7 +27,7 @@ export type MatteOptions = {
   speckleClean: number;
   /**
    * 0..100: kekuatan kurva alfa. Nilai >0 menaikkan kontras alfa sehingga
-   * piksel samar (alfa rendah) menjadi transparan penuh — menghilangkan
+   * piksel samar (alfa rendah) menjadi transparan penuh, menghilangkan
    * sisa tipis warna latar di sekitar rambut.
    */
   alphaContrast: number;
@@ -213,7 +213,7 @@ function erodeAlpha(alpha: Float32Array, w: number, h: number, r: number, protec
  * Median filter pada alfa, SADAR KONTEKS.
  *
  * Masalah pada versi sebelumnya: median diterapkan merata ke seluruh gambar.
- * Median 5x5 (radius 2) menghapus semua struktur lebih tipis dari 5 piksel —
+ * Median 5x5 (radius 2) menghapus semua struktur lebih tipis dari 5 piksel -
  * termasuk helai rambut dan tepi telinga. Itu sebabnya detail halus hilang.
  *
  * Solusi: hitung "masker detail" dari gradien alfa lokal. Piksel yang berada di
@@ -297,7 +297,7 @@ function contrastAlpha(alpha: Float32Array, strength: number, w: number, h: numb
       const p = y * w + x;
       const v = alpha[p];
 
-      // Deteksi area transisi (gradien besar) — jangan diubah di sana.
+      // Deteksi area transisi (gradien besar) - jangan diubah di sana.
       let lo = v;
       let hi = v;
       for (let dy = -1; dy <= 1; dy++) {
@@ -328,7 +328,7 @@ function contrastAlpha(alpha: Float32Array, strength: number, w: number, h: numb
  * Padatkan area yang seharusnya solid, TAPI pertahankan area transisi tipis.
  *
  * Masalah yang diselesaikan: model kadang memberi alpha sebagian (mis. 180-230)
- * pada area LUAS yang sebenarnya bagian dari subjek — kasus paling umum adalah
+ * pada area LUAS yang sebenarnya bagian dari subjek, kasus paling umum adalah
  * jas hitam atau kemeja gelap yang warnanya mirip latar. Akibatnya latar baru
  * "menembus" pakaian.
  *

@@ -3,7 +3,7 @@
  *
  * SUMBER & VERIFIKASI (diperiksa Agustus 2026):
  *
- * 1. Ukuran Indonesia (2x3, 3x4, 4x6, 6x9 cm) — konsisten lintas sumber:
+ * 1. Ukuran Indonesia (2x3, 3x4, 4x6, 6x9 cm) - konsisten lintas sumber:
  *    Paspoto, FixYourPic, ITKoding, Teknogram, SSFoto.
  *    Perbedaan angka piksel yang beredar di internet BUKAN karena standar berbeda,
  *    melainkan karena DPI yang dipakai berbeda:
@@ -11,7 +11,7 @@
  *    - 200 dpi (beberapa portal): 3x4 cm = 236 x 315 px
  *    Rumus: px = (mm / 25.4) * dpi
  *
- * 2. Standar internasional (ICAO Doc 9303, Edisi 8 2021) — dipakai 193 negara:
+ * 2. Standar internasional (ICAO Doc 9303, Edisi 8 2021) - dipakai 193 negara:
  *    - Geometri wajah: dagu ke ubun-ubun = 70-80% tinggi foto
  *    - Mata terbuka, ekspresi netral, mulut tertutup, kepala tegak
  *    - Latar polos terang (variasi nasional: AS putih, UK krem, Schengen abu terang)
@@ -120,7 +120,7 @@ export const RATIO_PRESETS: RatioPreset[] = [
     w: 1,
     h: 1,
     // 51 mm @300 dpi = 602 px. Untuk portal DS-160, Departemen Luar Negeri AS
-    // meminta tepat 600x600 px — gunakan mode piksel kustom bila perlu.
+    // meminta tepat 600x600 px, gunakan mode piksel kustom bila perlu.
     px: [602, 602],
     mm: [51, 51],
     note: "DS-160 & paspor AS, latar putih",

@@ -6,12 +6,12 @@
  * "diperjelas" tanpa efek samping.
  *
  * Teknik yang dipakai:
- * 1. Unsharp mask (USM) — standar industri: kurangi versi blur dari aslinya,
+ * 1. Unsharp mask (USM) - standar industri: kurangi versi blur dari aslinya,
  *    hasilnya tepi lebih tegas. Dilakukan pada kanal luminance saja agar warna
  *    tidak bergeser (mencegah color fringing).
- * 2. Clarity lokal — kontras midtone lokal untuk memberi kesan "detail".
+ * 2. Clarity lokal, kontras midtone lokal untuk memberi kesan "detail".
  *    Berbeda dari kontras global: tidak mengubah titik hitam/putih.
- * 3. Denoise ringan sebelum sharpen — mencegah noise ikut dipertegas.
+ * 3. Denoise ringan sebelum sharpen, mencegah noise ikut dipertegas.
  *
  * Semua operasi bekerja pada typed arrays, aman untuk Web Worker.
  */
@@ -30,7 +30,7 @@ export type EnhanceOptions = {
 /**
  * Nilai default: sengaja LEMBUT.
  *
- * Prinsip: enhance hanya "touch up" — memperjelas detail yang sudah ada, bukan
+ * Prinsip: enhance hanya "touch up" - memperjelas detail yang sudah ada, bukan
  * mengubah tampilan foto. Nilai tinggi cenderung membuat area gelap makin gelap
  * dan tepi terlihat berlebihan, jadi default dibuat konservatif.
  */
@@ -134,7 +134,7 @@ function denoiseLight(rgb: Uint8ClampedArray, w: number, h: number, strength: nu
 /**
  * Terapkan penajaman dan clarity pada data piksel.
  *
- * PENTING — mengapa versi sebelumnya membuat foto gelap:
+ * PENTING, mengapa versi sebelumnya membuat foto gelap:
  * 1. Perubahan luminance diterapkan sebagai RASIO (rgb * next/cur). Bila hasil
  *    perhitungan turun ke nilai sangat kecil atau negatif, rasio menjadi ekstrem
  *    dan piksel berubah menjadi hitam.
@@ -197,7 +197,7 @@ export function enhanceImageData(data: ImageData, opts: EnhanceOptions): void {
   }
 
   // Batas aman: perubahan maksimum 42 level (sekitar 16% dari rentang).
-  // Ini menjamin foto tidak berubah drastis — hanya "touch up".
+  // Ini menjamin foto tidak berubah drastis, hanya "touch up".
   const MAX_SHIFT = 42;
 
   // Terapkan sebagai penambahan ke ketiga kanal (bukan rasio), sehingga warna

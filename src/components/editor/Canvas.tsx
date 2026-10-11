@@ -35,7 +35,7 @@ export default function Canvas() {
   /**
    * Bitmap untuk panel "Asli" pada mode Bandingkan.
    *
-   * PENTING: `image.bitmap` adalah versi yang sedang diedit — setelah pemisahan
+   * PENTING: `image.bitmap` adalah versi yang sedang diedit, setelah pemisahan
    * subjek, bitmap itu sudah tidak berlatar. Untuk perbandingan yang benar, panel
    * "Asli" harus memakai blob ASLI yang disimpan saat pemisahan pertama.
    */

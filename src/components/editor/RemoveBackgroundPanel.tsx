@@ -182,7 +182,7 @@ export default function RemoveBackgroundPanel() {
           </div>
           <p className="flex items-center gap-1 text-[11px] leading-4 text-gray-400">
             <Lock size={12} strokeWidth={1.5} aria-hidden />
-            Berjalan di latar belakang — kamu masih bisa memakai panel lain.
+            Berjalan di latar belakang, kamu masih bisa memakai panel lain.
           </p>
         </div>
       ) : (

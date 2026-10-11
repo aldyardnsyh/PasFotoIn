@@ -5,7 +5,7 @@ import "./globals.css";
 
 /**
  * Plus Jakarta Sans: typeface geometris humanis dengan terminal lembut.
- * Terasa modern dan ramah, tapi tetap rapi di ukuran kecil — cocok untuk
+ * Terasa modern dan ramah, tapi tetap rapi di ukuran kecil, cocok untuk
  * antarmuka alat kerja tanpa terlihat generik.
  */
 const jakarta = Plus_Jakarta_Sans({
@@ -23,7 +23,7 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PasFotoIn — Ubah rasio dan latar foto",
+  title: "PasFotoIn, Ubah rasio dan latar foto",
   description:
     "Ubah rasio dan latar foto langsung di browser. Preset pas foto resmi Indonesia, hapus latar otomatis, siap cetak. Foto tidak pernah diunggah.",
 };

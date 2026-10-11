@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Panel "Perjelas Detail" — peningkatan ketajaman tanpa mengubah warna atau isi.
+ * Panel "Perjelas Detail" - peningkatan ketajaman tanpa mengubah warna atau isi.
  *
  * Latar belakang masalah: setelah penggantian latar atau pemrosesan ulang, foto
  * sering terlihat kurang tajam karena resampling berulang. Panel ini mengembalikan

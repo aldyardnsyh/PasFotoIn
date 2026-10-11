@@ -217,7 +217,7 @@ export default function BackgroundPicker() {
                 <button
                   key={f.color}
                   type="button"
-                  title={`${f.label} — ${f.hint}`}
+                  title={`${f.label} - ${f.hint}`}
                   aria-label={`Latar ${f.label}`}
                   aria-pressed={bg.kind === "solid" && bg.color === f.color}
                   onClick={() => set({ kind: "solid", color: f.color })}

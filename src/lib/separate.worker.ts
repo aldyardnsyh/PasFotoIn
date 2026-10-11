@@ -27,7 +27,7 @@ const MODEL_BY_QUALITY: Record<Quality, "isnet_quint8" | "isnet_fp16" | "isnet">
  *
  * Prinsip: makin kuat model, makin ringan perapian yang dibutuhkan. Model yang
  * lebih baik menghasilkan mask yang lebih halus sehingga tidak perlu pembersihan
- * agresif — agresivitas berlebih justru menghapus detail seperti rambut tipis.
+ * agresif, agresivitas berlebih justru menghapus detail seperti rambut tipis.
  */
 /**
  * Opsi perapian matte.
