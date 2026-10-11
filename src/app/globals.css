@@ -1,26 +1,483 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * Design tokens PasFotoIn Precision Studio.
+ * Sumber: stitch_pasfotoin_photo_editor/pasfotoin_precision_studio/DESIGN.md
+ * Aksen tunggal: royal blue #2563EB. Permukaan slate/putih, latar lavender sangat muda.
+ */
+@theme {
+  /* Aksen utama */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Netral slate (teks, border, surface) */
+  --color-gray-25: #f8fafc;
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e1;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #64748b;
+  --color-gray-600: #475569;
+  --color-gray-900: #0f172a;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Permukaan khas studio: latar halaman lavender sangat muda */
+  --color-surface: #faf8ff;
+  --color-surface-low: #f2f3ff;
+  --color-surface-mid: #eaedff;
+  --color-surface-high: #e2e7ff;
+  --color-surface-highest: #dae2fd;
+  --color-ink: #131b2e;
+  --color-ink-variant: #434655;
+  --color-outline: #737686;
+  --color-outline-variant: #c3c6d7;
+
+  /* Semantik */
+  --color-success: #059669;
+  --color-success-surface: #ecfdf5;
+  --color-warning: #d97706;
+  --color-warning-surface: #fffbeb;
+  --color-danger: #dc2626;
+  --color-danger-surface: #fef2f2;
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-code), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.1), 0 4px 8px -2px rgba(15, 23, 42, 0.06);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #faf8ff;
+  color: #131b2e;
+  font-size: 13px;
+  line-height: 18px;
+  /* Plus Jakarta Sans punya tinggi x yang lebih besar; beri sedikit ruang napas. */
+  letter-spacing: -0.005em;
+}
+
+/* Judul memakai tracking negatif lebih tegas agar terasa rapat dan modern. */
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
+}
+
+/* Angka teknis selalu tabular agar tidak bergeser. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Papan catur pratinjau transparan. */
+.checkerboard {
+  background-image: conic-gradient(#e2e8f0 25%, #ffffff 0 50%, #e2e8f0 0 75%, #ffffff 0);
+  background-size: 16px 16px;
+}
+
+/* Latar kanvas kerja: titik halus seperti studio grid. */
+.studio-grid {
+  background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* react-colorful disesuaikan token: radius, tanpa bayangan. */
+.react-colorful {
+  width: 100%;
+  height: 148px;
+}
+.react-colorful__saturation {
+  border-radius: 6px 6px 0 0;
+  border-bottom: none;
+}
+.react-colorful__hue {
+  height: 20px;
+  border-radius: 0 0 6px 6px;
+}
+.react-colorful__pointer {
+  width: 18px;
+  height: 18px;
+}
+
+/* ---------- Kelas komponen bersama (dipakai lintas panel) ---------- */
+
+/* Tombol utama: aksen penuh. Padding 14px agar label tidak terasa mepet. */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 16px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: background-color 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+.btn-primary:active {
+  transform: scale(0.99);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Tombol sekunder: putih dengan garis. */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 16px;
+  transition:
+    background-color 120ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Tombol hantu untuk bilah alat. Padding 10px agar teks tidak menempel tepi. */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition:
+    background-color 120ms cubic-bezier(0.2, 0, 0, 1),
+    color 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.btn-ghost:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+.btn-ghost[aria-pressed="true"],
+.btn-ghost.is-active {
+  background: #eff6ff;
+  color: #2563eb;
+}
+.btn-ghost:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Tombol ikon 32x32 untuk bilah atas. */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: #475569;
+  transition:
+    background-color 120ms cubic-bezier(0.2, 0, 0, 1),
+    color 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.btn-icon:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+.btn-icon:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.btn-icon.is-danger:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/**
+ * Tombol reset: aksi mengembalikan pengaturan ke nilai default.
+ *
+ * Sengaja dibedakan dari tombol lain dengan warna amber saat hover, agar
+ * pengguna tahu ini aksi "mengembalikan" — bukan aksi biasa. Selalu disertai
+ * ikon RotateCcw oleh pemakainya.
+ */
+.btn-reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 9px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+  transition:
+    background-color 120ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 120ms cubic-bezier(0.2, 0, 0, 1),
+    color 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.btn-reset:hover {
+  border-color: #fcd34d;
+  background: #fffbeb;
+  color: #b45309;
+}
+.btn-reset:active {
+  transform: scale(0.98);
+}
+.btn-reset:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Varian blok penuh untuk tombol reset di dalam panel. */
+.btn-reset-block {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition:
+    background-color 120ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 120ms cubic-bezier(0.2, 0, 0, 1),
+    color 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.btn-reset-block:hover {
+  border-color: #fcd34d;
+  background: #fffbeb;
+  color: #b45309;
+}
+.btn-reset-block:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Input teks/angka standar. Padding 10px agar teks tidak menempel tepi. */
+.field {
+  height: 34px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  padding: 0 10px;
+  font-size: 13px;
+  color: #0f172a;
+}
+.field::placeholder {
+  color: #94a3b8;
+}
+.field:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+/* Slider: track 4px, isian aksen. */
+.range {
+  width: 100%;
+  height: 16px;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+.range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 9999px;
+  background: #e2e8f0;
+}
+.range::-webkit-slider-thumb {
+  appearance: none;
+  margin-top: -5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.15);
+}
+.range::-moz-range-track {
+  height: 4px;
+  border-radius: 9999px;
+  background: #e2e8f0;
+}
+.range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.15);
+}
+
+/* Segmented control: wadah abu, item aktif putih. */
+.seg {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 8px;
+  background: #f1f5f9;
+}
+.seg-item {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #475569;
+  white-space: nowrap;
+  transition:
+    background-color 120ms cubic-bezier(0.2, 0, 0, 1),
+    color 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.seg-item:hover {
+  color: #0f172a;
+}
+.seg-item[aria-pressed="true"] {
+  background: #ffffff;
+  color: #2563eb;
+  font-weight: 600;
+  box-shadow: var(--shadow-xs);
+}
+
+/* Chip preset: kotak kecil dengan glyph rasio. Padding 10px 6px agar tidak mepet. */
+.chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 6px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #475569;
+  transition:
+    background-color 120ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 120ms cubic-bezier(0.2, 0, 0, 1),
+    color 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.chip:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+.chip[aria-pressed="true"] {
+  background: #eff6ff;
+  border-color: #2563eb;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* Judul seksi kecil di panel. */
+.section-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 16px;
+  color: #0f172a;
+}
+.section-hint {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: 0.01em;
+  color: #94a3b8;
+}
+.micro-label {
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 15px;
+  color: #64748b;
+}
+.code-label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 15px;
+  color: #64748b;
+}
+
+/* Kartu grup kontrol. */
+.panel-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+.well {
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+/* Sembunyikan scrollbar horizontal di strip ikon. */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
