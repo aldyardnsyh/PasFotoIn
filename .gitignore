@@ -75,3 +75,11 @@ desktop.ini
 # Jangan commit catatan kerja pribadi atau draf desain.
 /notes
 /TODO.local.md
+
+# ---------- Dokumen kerja internal ----------
+# Dokumen perencanaan, riset, dan catatan agen tidak untuk repo publik.
+# Dibiarkan ada di perangkat, tapi tidak ikut ter-push.
+AGENTS.md
+*- Breakdown Fitur untuk Redesign.md
+/PRD*.md
+/drafts

@@ -4,6 +4,25 @@ Editor foto berbasis browser untuk mengubah rasio dan latar. Semua proses berjal
 
 Dibuat untuk kebutuhan pas foto Indonesia: preset dalam sentimeter, pemisahan subjek otomatis, dan lembar cetak A4 siap potong.
 
+[![Next.js](https://img.shields.io/badge/Next.js-16.4-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19.3-61DAFB?logo=react&logoColor=white)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Zustand](https://img.shields.io/badge/Zustand-5-433E38)](https://zustand.docs.pmnd.rs)
+
+[![Vitest](https://img.shields.io/badge/Vitest-3-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev)
+[![Playwright](https://img.shields.io/badge/Playwright-1.64-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev)
+[![ESLint](https://img.shields.io/badge/ESLint-9-4B32C3?logo=eslint&logoColor=white)](https://eslint.org)
+
+[![WebAssembly](https://img.shields.io/badge/WebAssembly-654FF0?logo=webassembly&logoColor=white)](https://webassembly.org)
+[![ONNX Runtime](https://img.shields.io/badge/ONNX_Runtime-Web-005CED?logo=onnx&logoColor=white)](https://onnxruntime.ai)
+[![IndexedDB](https://img.shields.io/badge/IndexedDB-4285F4?logo=googlechrome&logoColor=white)](https://developer.mozilla.org/docs/Web/API/IndexedDB_API)
+![Web Worker](https://img.shields.io/badge/Web_Worker-Off_Main_Thread-475569)
+
+![Privasi](https://img.shields.io/badge/Privasi-Tanpa_Unggahan-1E9E5A)
+![Lisensi](https://img.shields.io/badge/Lisensi-GPL--3.0-2F61DA)
+![Bahasa](https://img.shields.io/badge/Bahasa-Indonesia-D32F2F)
+
 ---
 
 ## Masalah yang diselesaikan
