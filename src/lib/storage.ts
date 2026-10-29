@@ -197,7 +197,15 @@ export async function deleteBlob(id: string) {
 
 export async function clearAll() {
   try {
-    localStorage.clear();
+    // Hanya hapus kunci milik aplikasi ini. `localStorage.clear()` akan ikut
+    // menghapus data milik aplikasi lain di origin yang sama, jadi tidak dipakai.
+    const toRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(PREFIX)) toRemove.push(k);
+    }
+    for (const k of toRemove) localStorage.removeItem(k);
+
     const all = await keys();
     for (const k of all) {
       if (typeof k === "string" && k.startsWith(PREFIX)) await del(k);

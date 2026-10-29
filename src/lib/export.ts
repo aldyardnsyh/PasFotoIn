@@ -1,5 +1,6 @@
 import type { Project } from "./geometry";
 import { prepareSource, renderToBlob, render } from "./render";
+import { safeFilename } from "./filename";
 
 export const MAX_SIDE = 8192;
 
@@ -137,7 +138,9 @@ export function download(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = filename;
+  // Sanitasi di titik terakhir: apa pun yang lolos dari pemanggil tidak akan
+  // pernah menjadi path traversal saat disimpan peramban.
+  a.download = safeFilename(filename, "unduhan");
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

@@ -51,6 +51,16 @@ lerna-debug.log*
 *.key
 *.p12
 *.pfx
+*.keystore
+*.jks
+id_rsa*
+id_ed25519*
+.npmrc
+.pypirc
+.netrc
+secrets.json
+credentials.json
+serviceAccount*.json
 
 # ---------- Editor & OS ----------
 .DS_Store
@@ -83,3 +93,29 @@ AGENTS.md
 *- Breakdown Fitur untuk Redesign.md
 /PRD*.md
 /drafts
+
+# ---------- Arsip & cadangan lokal ----------
+# Jangan commit cadangan, dump, atau arsip yang mungkin berisi data nyata.
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar
+*.bak
+*.orig
+*.rej
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+
+# ---------- Data foto pengguna ----------
+# Foto uji sintetis di tests/fixtures tetap diizinkan lewat pengecualian di bawah.
+# Foto asli pengguna tidak boleh masuk repo.
+*.jpg
+*.jpeg
+*.heic
+*.heif
+*.avif
+!tests/fixtures/*
+!src/app/*.ico

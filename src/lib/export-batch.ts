@@ -7,6 +7,7 @@
 import { zipSync } from "fflate";
 import type { Project } from "./geometry";
 import { exportBlob } from "./export";
+import { safeFilename } from "./filename";
 
 export type BatchItem = { project: Project; source: Blob; bgBlob: Blob | null };
 
@@ -155,7 +156,8 @@ async function runOnMain(
     const it = items[i];
     const blob = await exportBlob(it.project, it.source, it.bgBlob, w, h, format, quality);
     if (blob) {
-      const base = `${it.project.name}-${it.project.ratioW}x${it.project.ratioH}`;
+      // Sanitasi nama entri ZIP: cegah zip-slip dari nama foto pengguna.
+      const base = safeFilename(`${it.project.name}-${it.project.ratioW}x${it.project.ratioH}`, `foto-${i + 1}`);
       let name = `${base}.${ext}`;
       let n = 2;
       while (used.has(name)) name = `${base}-${n++}.${ext}`;

@@ -5,6 +5,7 @@
  */
 import { zipSync } from "fflate";
 import { prepareSource, render } from "../lib/render";
+import { safeFilename } from "../lib/filename";
 import type { Project } from "../lib/geometry";
 
 type Job = {
@@ -64,7 +65,9 @@ self.onmessage = async (e: MessageEvent<InMessage>) => {
     for (let i = 0; i < msg.jobs.length; i++) {
       const job = msg.jobs[i];
       const blob = await renderJob(job);
-      const base = `${job.project.name}-${job.project.ratioW}x${job.project.ratioH}`;
+      // Nama entri ZIP berasal dari nama foto pengguna. Tanpa sanitasi, entri
+      // `../` bisa menulis ke luar folder tujuan saat arsip diekstrak (zip-slip).
+      const base = safeFilename(`${job.project.name}-${job.project.ratioW}x${job.project.ratioH}`, `foto-${i + 1}`);
       files[uniqueName(base, msg.ext, used)] = new Uint8Array(await blob.arrayBuffer());
       self.postMessage({ type: "progress", done: i + 1, total: msg.jobs.length });
     }

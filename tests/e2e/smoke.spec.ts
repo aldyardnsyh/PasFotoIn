@@ -186,9 +186,24 @@ test.describe("alur utama", () => {
   test("beranda: tempel gambar dari clipboard membuka editor", async ({ page }) => {
     await page.goto("/");
     const b64 = fs.readFileSync(PHOTO).toString("base64");
+    // Tunggu React selesai hydrate. Handler paste dipasang lewat useEffect, jadi
+    // event yang dikirim sebelum hydration selesai akan hilang tanpa efek.
+    await page.waitForFunction(
+      () => {
+        const el = document.querySelector('input[type="file"]');
+        return !!el && el.getAttribute("data-ready") === "1";
+      },
+      undefined,
+      { timeout: 15000 },
+    );
     await page.evaluate(async (data) => {
-      const res = await fetch(`data:image/png;base64,${data}`);
-      const blob = await res.blob();
+      // Decode base64 tanpa fetch: CSP produksi membatasi connect-src ke host
+      // yang benar-benar dipakai aplikasi, sehingga fetch(data:) akan diblokir.
+      // atob + Uint8Array cukup untuk mengubah base64 menjadi byte gambar.
+      const bin = atob(data);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const blob = new Blob([bytes], { type: "image/png" });
       const file = new File([blob], "tempelan.png", { type: "image/png" });
       const dt = new DataTransfer();
       dt.items.add(file);
@@ -258,7 +273,7 @@ test.describe("alur utama", () => {
     await uploadPhoto(page);
     await openTab(page, "Sesuaikan");
     await expect(page.getByText("Histogram").last()).toBeVisible();
-    await expect(page.locator('canvas[role="img"][aria-label="Grafik histogram foto"]').last()).toBeVisible();
+    await expect(page.locator('canvas[role="img"][aria-label^="Grafik histogram foto"]').last()).toBeVisible();
     await expect(page.getByRole("button", { name: "Auto Levels" }).last()).toBeVisible();
     await expect(page.getByRole("button", { name: "Auto Warna" }).last()).toBeVisible();
     // Ringkasan kondisi foto harus muncul sebagai teks.
@@ -343,12 +358,18 @@ test.describe("alur utama", () => {
     const before = await filmstrip.locator("img").count();
     expect(before).toBeGreaterThanOrEqual(2);
 
+    // Tombol hapus membuka dialog konfirmasi, jadi klik tombol konfirmasi
+    // di dalam dialog agar foto benar-benar terhapus.
     await page.getByRole("button", { name: "Hapus foto ini" }).first().click();
-    await page.waitForTimeout(600);
+    const dialog = page.getByRole("alertdialog");
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole("button", { name: "Hapus foto", exact: true }).click();
+    // Filmstrip hanya dirender bila ada dua foto atau lebih, jadi begitu satu
+    // foto dihapus filestrip itu sendiri yang hilang dari DOM.
+    await expect(page.locator("div.no-scrollbar")).toHaveCount(0);
+
     await page.keyboard.press("Control+z");
-    await page.waitForTimeout(600);
-    const after = await filmstrip.locator("img").count();
-    expect(after).toBe(before);
+    await expect(page.locator("div.no-scrollbar").last().locator("img")).toHaveCount(before);
   });
 
   test("tentang: halaman privasi tampil dan tombol hapus data ada", async ({ page }) => {
