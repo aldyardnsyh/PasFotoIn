@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import { toastSuccess, toastError } from "../../lib/toast";
 import { Download, Frame, Loader2, RotateCcw } from "lucide-react";
 import { useEditor } from "../../store/editor";
+import { useSliderHistory } from "./useSliderHistory";
 import { RATIO_PRESETS } from "../../lib/presets";
 import { loadBlob } from "../../lib/storage";
 import { download, formatBytes } from "../../lib/export";
@@ -18,6 +19,7 @@ export default function FrameSheetPanel() {
   const setFrame = useEditor((s) => s.setFrame);
   const resetFrame = useEditor((s) => s.resetFrame);
   const pushHistoryNow = useEditor((s) => s.pushHistoryNow);
+  const slider = useSliderHistory();
   const format = useEditor((s) => s.format);
   const quality = useEditor((s) => s.quality);
   const [sheetBusy, setSheetBusy] = useState(false);
@@ -102,8 +104,13 @@ export default function FrameSheetPanel() {
             min={0}
             max={25}
             value={frame.padding}
-            onChange={(e) => setFrame({ padding: Number(e.target.value) }, false)}
-            onPointerDown={() => pushHistoryNow()}
+            onChange={(e) => {
+              const nilai = Number(e.target.value);
+              slider.change((commit) => setFrame({ padding: nilai }, commit));
+            }}
+            onPointerDown={slider.onPointerDown}
+            onPointerUp={slider.endGesture}
+            onPointerCancel={slider.endGesture}
             className="range"
           />
           <span className="block text-[11px] leading-4 text-gray-400">Jarak foto dari tepi bingkai</span>
@@ -120,8 +127,13 @@ export default function FrameSheetPanel() {
             min={0}
             max={50}
             value={frame.radius}
-            onChange={(e) => setFrame({ radius: Number(e.target.value) }, false)}
-            onPointerDown={() => pushHistoryNow()}
+            onChange={(e) => {
+              const nilai = Number(e.target.value);
+              slider.change((commit) => setFrame({ radius: nilai }, commit));
+            }}
+            onPointerDown={slider.onPointerDown}
+            onPointerUp={slider.endGesture}
+            onPointerCancel={slider.endGesture}
             className="range"
           />
         </div>

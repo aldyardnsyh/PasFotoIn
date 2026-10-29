@@ -8,6 +8,7 @@ import Dropzone from "../components/editor/Dropzone";
 import Logo from "../components/Logo";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import ProjectThumb from "../components/editor/ProjectThumb";
+import CopyrightNotice from "../components/CopyrightNotice";
 import { clearAll, isStorageAvailable, loadProjects } from "../lib/storage";
 import { RATIO_PRESETS } from "../lib/presets";
 import type { Project } from "../lib/geometry";
@@ -361,9 +362,15 @@ export default function HomePage() {
       </main>
 
       <footer className="border-t border-gray-200/70 bg-white">
-        <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-2 px-5 py-6 text-[12px] text-gray-500 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex w-full max-w-[1080px] flex-wrap items-center justify-between gap-x-4 gap-y-1 px-5 py-4 text-[11px] leading-4 text-gray-500">
           <p>Rasio untuk Instagram, TikTok, YouTube, dan marketplace. Semua proses berjalan di browser kamu.</p>
-          <span className="code-label shrink-0">v1.0.0 · Offline Ready</span>
+          <p className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="code-label whitespace-nowrap">v1.0.0 · Offline Ready</span>
+            <span aria-hidden className="text-gray-300">
+              ·
+            </span>
+            <CopyrightNotice inline />
+          </p>
         </div>
       </footer>
 

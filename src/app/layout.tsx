@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
+import { COPYRIGHT_HOLDER, COPYRIGHT_TEXT } from "../lib/copyright";
 import "./globals.css";
 
 /**
@@ -26,6 +27,12 @@ export const metadata: Metadata = {
   title: "PasFotoIn, Ubah rasio dan latar foto",
   description:
     "Ubah rasio dan latar foto langsung di browser. Preset pas foto resmi Indonesia, hapus latar otomatis, siap cetak. Foto tidak pernah diunggah.",
+  creator: COPYRIGHT_HOLDER,
+  publisher: COPYRIGHT_HOLDER,
+  authors: [{ name: COPYRIGHT_HOLDER }],
+  other: {
+    copyright: COPYRIGHT_TEXT,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

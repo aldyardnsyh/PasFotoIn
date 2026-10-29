@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toastSuccess, toastError } from "../../lib/toast";
 import { RotateCcw, Wand2 } from "lucide-react";
 import { useEditor } from "../../store/editor";
+import { useSliderHistory } from "./useSliderHistory";
 import type { Adjust } from "../../lib/geometry";
 import { estimateWhiteBalance } from "../../lib/adjust";
 
@@ -27,6 +28,7 @@ export default function AdjustPanel() {
   const setAdjust = useEditor((s) => s.setAdjust);
   const resetAdjust = useEditor((s) => s.resetAdjust);
   const pushHistoryNow = useEditor((s) => s.pushHistoryNow);
+  const slider = useSliderHistory();
   const [autoBusy, setAutoBusy] = useState(false);
 
   if (!image) return null;
@@ -92,8 +94,13 @@ export default function AdjustPanel() {
             min={-100}
             max={100}
             value={a[s.key]}
-            onChange={(e) => setAdjust({ [s.key]: Number(e.target.value) } as Partial<Adjust>, false)}
-            onPointerDown={() => pushHistoryNow()}
+            onChange={(e) => {
+              const nilai = Number(e.target.value);
+              slider.change((commit) => setAdjust({ [s.key]: nilai } as Partial<Adjust>, commit));
+            }}
+            onPointerDown={slider.onPointerDown}
+            onPointerUp={slider.endGesture}
+            onPointerCancel={slider.endGesture}
             className="range"
           />
           <span className="block text-[11px] leading-4 text-gray-400">{s.hint}</span>

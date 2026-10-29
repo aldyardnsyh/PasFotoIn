@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { FlipHorizontal2, FlipVertical2, RotateCcw, RotateCw } from "lucide-react";
 import { useEditor } from "../../store/editor";
+import { useSliderHistory } from "./useSliderHistory";
 
 const MIN_SCALE = 0.1;
 const MAX_SCALE = 5;
@@ -11,6 +12,7 @@ export default function TransformPanel() {
   const image = useEditor((s) => s.images.find((e) => e.id === s.activeId));
   const setTransform = useEditor((s) => s.setTransform);
   const pushHistoryNow = useEditor((s) => s.pushHistoryNow);
+  const slider = useSliderHistory();
   const [scaleText, setScaleText] = useState("");
 
   const scale = image?.edit.transform.scale ?? 1;
@@ -47,8 +49,13 @@ export default function TransformPanel() {
             min={Math.round(min * 100)}
             max={MAX_SCALE * 100}
             value={Math.round(scale * 100)}
-            onChange={(e) => setTransform({ scale: Number(e.target.value) / 100 }, false)}
-            onPointerDown={() => pushHistoryNow()}
+            onChange={(e) => {
+              const nilai = Number(e.target.value) / 100;
+              slider.change((commit) => setTransform({ scale: nilai }, commit));
+            }}
+            onPointerDown={slider.onPointerDown}
+            onPointerUp={slider.endGesture}
+            onPointerCancel={slider.endGesture}
             className="range min-w-0 flex-1"
           />
           <div className="flex h-8 w-20 shrink-0 items-center rounded-md border border-gray-200 bg-white px-2">
@@ -103,8 +110,13 @@ export default function TransformPanel() {
           max={45}
           step={1}
           value={Math.round(t.rotation)}
-          onChange={(e) => setTransform({ rotation: Number(e.target.value) }, false)}
-          onPointerDown={() => pushHistoryNow()}
+          onChange={(e) => {
+            const nilai = Number(e.target.value);
+            slider.change((commit) => setTransform({ rotation: nilai }, commit));
+          }}
+          onPointerDown={slider.onPointerDown}
+          onPointerUp={slider.endGesture}
+          onPointerCancel={slider.endGesture}
           className="range"
         />
       </div>

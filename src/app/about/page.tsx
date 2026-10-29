@@ -6,6 +6,7 @@ import { toastSuccess } from "../../lib/toast";
 import { clearAll, isStorageAvailable } from "../../lib/storage";
 import Logo from "../../components/Logo";
 import ConfirmDialog from "../../components/ui/ConfirmDialog";
+import CopyrightNotice from "../../components/CopyrightNotice";
 import { Archive, ArrowLeft, CameraOff, Puzzle, Ratio, ShieldCheck, Trash2 } from "lucide-react";
 
 const STEPS: { icon: typeof Ratio; title: string; body: string }[] = [
@@ -209,16 +210,23 @@ export default function AboutPage() {
         </section>
 
         <div className="h-px w-full bg-gray-200" />
-
-        {/* Footer artikel */}
-        <footer className="flex flex-col items-center justify-between gap-3 pb-4 sm:flex-row">
-          <span className="code-label">v1.0.0 · Offline Ready</span>
-          <Link href="/" className="btn-primary">
-            <ArrowLeft size={16} strokeWidth={1.5} aria-hidden />
-            Kembali ke Workbench Editor
-          </Link>
-        </footer>
       </article>
+
+      {/* Footer halaman, selebar konten utama agar versi, hak cipta, dan tombol
+          kembali muat dalam satu baris. */}
+      <footer className="mt-10 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-gray-200 py-4">
+        <p className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-gray-500">
+          <span className="code-label whitespace-nowrap">v1.0.0 · Offline Ready</span>
+          <span aria-hidden className="text-gray-300">
+            ·
+          </span>
+          <CopyrightNotice inline />
+        </p>
+        <Link href="/" className="btn-primary shrink-0">
+          <ArrowLeft size={16} strokeWidth={1.5} aria-hidden />
+          Kembali ke Workbench Editor
+        </Link>
+      </footer>
 
       <ConfirmDialog
         open={confirmClear}

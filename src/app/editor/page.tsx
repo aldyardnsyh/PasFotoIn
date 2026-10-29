@@ -9,6 +9,7 @@ import Inspector from "../../components/editor/Inspector";
 import Filmstrip from "../../components/editor/Filmstrip";
 import ExportDialog from "../../components/editor/ExportDialog";
 import Dropzone from "../../components/editor/Dropzone";
+import CopyrightNotice from "../../components/CopyrightNotice";
 import AddPhotosButton from "../../components/editor/AddPhotosButton";
 import DeletePhotoButton from "../../components/editor/DeletePhotoButton";
 import { loadBlob, loadProjects, saveProject, QUOTA_EVENT, deleteOldestProject } from "../../lib/storage";
@@ -142,12 +143,25 @@ export default function EditorPage() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement;
-      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT")) return;
+      const el = e.target as HTMLElement | null;
+      const tag = el?.tagName;
+      const isRange = tag === "INPUT" && (el as HTMLInputElement).type === "range";
+      // Kolom teks, textarea, dan select punya undo/redo sendiri dari peramban,
+      // jadi pintasan aplikasi tidak boleh mengambil alih. Slider (input range)
+      // tidak punya undo bawaan, sehingga Ctrl+Z di sana tetap harus bekerja.
+      const isTextField =
+        (tag === "INPUT" && !isRange) || tag === "TEXTAREA" || tag === "SELECT" || el?.isContentEditable === true;
+      if (isTextField) return;
+
       const mod = e.ctrlKey || e.metaKey;
       const st = useEditor.getState();
       const cur = st.images.find((x) => x.id === st.activeId);
       if (!cur) return;
+
+      // Saat fokus di slider, hanya pintasan ber-modifier yang diproses.
+      // Tombol panah dan huruf harus tetap mengubah nilai slider secara native.
+      if (isRange && !mod) return;
+
       if (mod && e.key.toLowerCase() === "z") {
         e.preventDefault();
         if (e.shiftKey) st.redo();
@@ -415,6 +429,12 @@ export default function EditorPage() {
       </div>
 
       <Filmstrip />
+
+      {/* Baris hak cipta. Tipis dan di luar area kanvas supaya tidak memakan ruang kerja. */}
+      <div className="shrink-0 border-t border-gray-100 bg-white px-3 py-1">
+        <CopyrightNotice align="center" compact />
+      </div>
+
 
       {sheetOpen && (
         <div className="fixed inset-0 z-40 flex flex-col justify-end lg:hidden">

@@ -33,6 +33,146 @@ PasFotoIn membuka area unggah sebagai halaman pertama, bukan halaman pemasaran.
 
 ---
 
+## Tech Stack
+
+Seluruh stack dipilih agar aplikasi bisa berjalan sebagai berkas statis: tidak ada API route, tidak ada database, tidak ada environment variable, tidak ada akun.
+
+| Lapisan | Pilihan | Versi | Dipakai untuk |
+| --- | --- | --- | --- |
+| Framework | Next.js (App Router, output statis) | 16.4 | Routing halaman, build statis, metadata |
+| Bahasa | TypeScript | 5.x | Tipe data untuk geometri, state, dan ekspor |
+| UI runtime | React | 19.3 | Komponen editor dan inspector |
+| Styling | Tailwind CSS v4 + token desain di `globals.css` | 4.x | Sistem visual dan tata letak responsif |
+| State | Zustand | 5.0 | State editor dan riwayat undo/redo (snapshot immutable) |
+| Ikon | lucide-react | 1.53 | Ikon antarmuka |
+| Segmentasi | `@imgly/background-removal` + onnxruntime-web (WASM) | 1.7 / 1.21 | Pemisahan subjek di Web Worker |
+| Gestur | `@use-gesture/react` | 10.3 | Drag, pinch-zoom, dan geser pada kanvas |
+| Pemilih warna | react-colorful | 5.8 | Color picker untuk latar |
+| Penyimpanan blob | idb-keyval di atas IndexedDB | 6.3 | Menyimpan blob foto sumber dan thumbnail |
+| ZIP | fflate | 0.8 | Batch ekspor foto sebagai arsip ZIP |
+| Notifikasi | sonner | 2.0 | Toast untuk umpan balik aksi |
+| Uji unit | Vitest | 4.x | Uji logika geometri, tone, matte, ekspor |
+| Uji E2E | Playwright | 1.64 | Uji alur pengguna di Chromium dan Pixel 7 |
+| Lint | ESLint + eslint-config-next | 9 / 16.4 | Pemeriksaan gaya kode |
+| Dokumentasi | Markdown + Playwright screenshot | - | Halaman README dan gambar di `docs/screenshots/` |
+
+Prinsip arsitekturnya satu kalimat: kerja berat berjalan di thread terpisah (Web Worker) dan di perangkat, sehingga thread utama hanya menangani antarmuka.
+
+---
+
+## Tampilan Singkat
+
+| Beranda | Editor |
+| --- | --- |
+| ![Halaman beranda](docs/screenshots/01-beranda.png) | ![Editor dengan panel Rasio](docs/screenshots/03-editor-rasio.png) |
+
+| Latar belakang | Penyesuaian warna |
+| --- | --- |
+| ![Panel latar belakang](docs/screenshots/05-editor-latar.png) | ![Panel penyesuaian dan histogram](docs/screenshots/06-editor-sesuaikan.png) |
+
+---
+
+## Dokumentasi Halaman dan Fitur
+
+Aplikasi punya tiga halaman: beranda (`/`), editor (`/editor`), dan tentang (`/about`). Setiap halaman punya peran yang tidak tumpang tindih.
+
+### 1. Halaman Beranda (`/`)
+
+![Beranda lengkap](docs/screenshots/02-beranda-lengkap.png)
+
+Halaman pertama adalah area kerja, bukan halaman pemasaran. Fungsinya:
+
+- **Area unggah langsung.** Tarik file ke halaman atau klik "Pilih foto". Bisa juga tempel dari clipboard dengan `Ctrl + V`. Setelah dipilih, halaman langsung berpindah ke editor.
+- **Pintasan dokumen resmi.** Tombol KTP/SIM 3×4 cm, Ijazah/CPNS 4×6 cm, dan Paspor/Visa 35×45 mm. Sekali klik, file picker terbuka.
+- **Daftar proyek terakhir.** Proyek yang pernah disimpan muncul sebagai thumbnail nyata dengan label rasio dan tanggal. Klik untuk membuka lagi.
+- **Hapus data lokal.** Menghapus seluruh proyek dan pengaturan dari peramban, dengan dialog konfirmasi.
+
+### 2. Halaman Editor (`/editor`)
+
+![Editor dengan panel Rasio](docs/screenshots/03-editor-rasio.png)
+
+Tiga area: kanvas di tengah, bilah kendali di bawah kanvas, dan panel kanan berisi empat tab. Di ponsel, panel kanan berubah menjadi bottom sheet.
+
+#### Bilah atas
+
+- Nama proyek yang bisa diedit langsung (klik, ubah, `Enter` untuk menyimpan).
+- Indikator "Tersimpan otomatis di browser" beserta status penyimpanan.
+- Undo dan redo, tombol tambah foto, tombol hapus foto, dan tombol Ekspor.
+
+#### Kanvas dan bilah kendali
+
+- Drag untuk menggeser foto, pinch atau scroll untuk zoom.
+- Zoom masuk, zoom keluar, dan persentase yang bisa diketik.
+- Panduan grid, mode bandingkan sebelum/sesudah, dan atur ulang transformasi.
+- "Samakan semua" untuk menerapkan rasio, posisi, dan latar ke foto lain di filmstrip.
+
+#### Tab Rasio
+
+![Preset dokumen KTP/SIM aktif](docs/screenshots/04-editor-preset-dokumen-kpt.png)
+
+- Pintasan dokumen resmi yang mengatur rasio, warna latar, dan mode Muat sekaligus.
+- Preset rasio umum (1:1 sampai 21:9), dokumen Indonesia dalam sentimeter, ukuran internasional ICAO 9303, serta preset media sosial dan marketplace.
+- Ukuran kustom perbandingan lebar dan tinggi.
+- Mode penempatan: Isi (Isi/penuhi area) dan Muat (Muat/pertahankan rasio asli).
+- Panel transformasi: zoom, rotasi, flip, dan padding bingkai.
+- Panel bingkai: padding tepi foto dan tombol unduh lembar cetak A4 pada 300 DPI.
+
+#### Tab Latar
+
+![Panel latar belakang](docs/screenshots/05-editor-latar.png)
+
+- Warna solid, 12 preset gradien, blur dari foto itu sendiri, transparan, atau gambar latar sendiri.
+- Warna latar resmi Indonesia: Merah `#D32F2F`, Biru `#0B57D0`, Putih, dan Abu Studio.
+- Palet lima warna dominan diekstrak otomatis dari foto.
+- Color picker, input hex, dan pipet layar bila peramban mendukung EyeDropper API.
+- Panel pisah subjek: model segmentasi di perangkat dengan tiga tingkat kualitas (42 MB, 84 MB, 168 MB) dan perapian matte delapan tahap.
+
+#### Tab Sesuaikan
+
+![Panel penyesuaian, histogram, dan perjelas detail](docs/screenshots/06-editor-sesuaikan.png)
+
+- Enam slider: eksposur, kontras, sorotan, bayangan, saturasi, suhu.
+- Histogram 256 bin dengan mode Cahaya dan RGB.
+- Levels yang bisa digeser langsung di grafik, plus slider titik hitam, gamma, dan titik putih.
+- Auto Levels dan Auto Warna dengan kekuatan lembut, plus white balance otomatis gray-world.
+- Perjelas detail: unsharp mask pada luminance, clarity, dan denoise ringan.
+
+Semua koreksi non-destruktif dan ikut tersimpan di proyek.
+
+#### Tab Ekspor dan dialog ekspor
+
+![Tab Ekspor](docs/screenshots/07-editor-ekspor.png)
+
+![Dialog ekspor](docs/screenshots/08-dialog-ekspor.png)
+
+- Format PNG, JPEG, dan WebP dengan kualitas 40 sampai 100.
+- Ukuran dari preset, skala 1x/2x/3x, atau piksel kustom.
+- Pemilih 300 DPI atau 600 DPI untuk preset dokumen.
+- Perkiraan ukuran file dihitung dari encode pratinjau.
+- Salin ke clipboard sebagai PNG.
+- Batch ZIP dengan progress dan tombol batalkan.
+- Metadata EXIF tidak ikut diekspor.
+
+### 3. Halaman Tentang (`/about`)
+
+![Halaman tentang](docs/screenshots/09-tentang.png)
+
+Dokumentasi privasi dan tata kelola data dalam empat bagian: privasi dan arsitektur nol peladen, cara kerja, batas penggunaan, serta data lokal dan tombol hapus semua data.
+
+### 4. Tampilan Ponsel
+
+| Beranda ponsel | Editor ponsel |
+| --- | --- |
+| ![Beranda di ponsel](docs/screenshots/10-beranda-mobile.png) | ![Editor di ponsel](docs/screenshots/11-editor-mobile.png) |
+
+| Bottom sheet pengaturan |
+| --- |
+| ![Bottom sheet pengaturan di ponsel](docs/screenshots/12-editor-mobile-bottomsheet.png) |
+
+Di layar kecil, panel inspector berpindah ke bottom sheet yang dibuka lewat tombol "Pengaturan".
+
+---
+
 ## Kemampuan
 
 ### Rasio dan ukuran
@@ -107,26 +247,6 @@ Foto diproses di peramban dan tidak dikirim ke mana pun. Untuk memastikan, buka 
 Pengecualian: fitur pemisahan subjek mengunduh berkas model (42 sampai 168 MB) sekali dari `staticimgly.com`. Foto tetap tidak diunggah.
 
 Data yang disimpan hanya di perangkat: pengaturan, metadata proyek, dan blob gambar di IndexedDB. Maksimum 20 proyek, kedaluwarsa 14 hari. Tombol hapus semua data tersedia di halaman Tentang.
-
----
-
-## Teknologi
-
-| Lapisan | Pilihan |
-| --- | --- |
-| Framework | Next.js 16 (App Router), TypeScript, output statis |
-| Styling | Tailwind CSS v4 dengan token desain di `globals.css` |
-| State | Zustand dengan riwayat snapshot immutable |
-| Ikon | lucide-react |
-| Segmentasi | `@imgly/background-removal` di Web Worker |
-| Gestur | `@use-gesture/react` |
-| Pemilih warna | react-colorful |
-| Penyimpanan blob | idb-keyval di atas IndexedDB |
-| ZIP | fflate |
-| Notifikasi | sonner |
-| Uji | Vitest dan Playwright |
-
-Tidak ada API route, tidak ada database, tidak ada environment variable.
 
 ---
 
@@ -207,11 +327,28 @@ src/
     toast.tsx             # notifikasi berikon
   store/
     editor.ts             # state editor dan riwayat undo/redo
+scripts/
+  capture-screenshots.mjs # ambil ulang screenshot dokumentasi
 tests/
   unit/                   # Vitest
   e2e/                    # Playwright
   fixtures/photo.png      # gambar uji sintetis
+docs/
+  screenshots/            # gambar untuk README
 ```
+
+### Memperbarui screenshot dokumentasi
+
+```bash
+npm run build
+python "C:\Users\aldya\.agents\skills\browser-qa-py\qa_app.py" `
+  --app-cmd "npm run start -- -p 3210" `
+  --workdir "<repo>" `
+  --url "http://127.0.0.1:3210/" `
+  --cmd "node scripts/capture-screenshots.mjs"
+```
+
+Skrip menjalankan server produksi, mengambil ulang seluruh gambar di `docs/screenshots/`, lalu mematikan server secara otomatis. Jalankan `npm run build` lebih dulu agar server memakai hasil build terbaru.
 
 ---
 

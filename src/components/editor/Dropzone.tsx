@@ -60,6 +60,10 @@ export default function Dropzone({ large = false, onDone }: { large?: boolean; o
         accept="image/*"
         multiple
         hidden
+        // Penanda bahwa komponen sudah ter-render di sisi klien. Dipakai E2E
+        // untuk menunggu React selesai hydrate sebelum mengirim event paste,
+        // karena handler paste dipasang lewat useEffect.
+        data-ready="1"
         onChange={(e) => {
           handle(e.target.files);
           e.target.value = "";

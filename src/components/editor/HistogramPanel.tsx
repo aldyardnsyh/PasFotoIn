@@ -16,6 +16,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toastSuccess, toastError } from "../../lib/toast";
 import { Info, RotateCcw, Wand2 } from "lucide-react";
 import { useEditor } from "../../store/editor";
+import { useSliderHistory } from "./useSliderHistory";
 import {
   computeAutoLevels,
   computeHistogram,
@@ -40,6 +41,7 @@ export default function HistogramPanel() {
   const image = useEditor((s) => s.images.find((e) => e.id === s.activeId));
   const setAdjust = useEditor((s) => s.setAdjust);
   const pushHistoryNow = useEditor((s) => s.pushHistoryNow);
+  const slider = useSliderHistory();
   const [hist, setHist] = useState<Histogram | null>(null);
   const [channel, setChannel] = useState<Channel>("lum");
   const [dragging, setDragging] = useState<Handle>(null);
@@ -333,8 +335,13 @@ export default function HistogramPanel() {
             min={0}
             max={254}
             value={black}
-            onChange={(e) => setLevels({ levelBlack: Math.min(Number(e.target.value), white - 8) })}
-            onPointerDown={() => pushHistoryNow("Ubah titik hitam")}
+            onChange={(e) => {
+              const nilai = Math.min(Number(e.target.value), white - 8);
+              slider.change((commit) => setLevels({ levelBlack: nilai }, commit));
+            }}
+            onPointerDown={slider.onPointerDown}
+            onPointerUp={slider.endGesture}
+            onPointerCancel={slider.endGesture}
             className="range"
           />
         </div>
@@ -349,8 +356,13 @@ export default function HistogramPanel() {
             min={33}
             max={300}
             value={Math.round(gamma * 100)}
-            onChange={(e) => setLevels({ levelGamma: Number((Number(e.target.value) / 100).toFixed(2)) })}
-            onPointerDown={() => pushHistoryNow("Ubah gamma")}
+            onChange={(e) => {
+              const nilai = Number((Number(e.target.value) / 100).toFixed(2));
+              slider.change((commit) => setLevels({ levelGamma: nilai }, commit));
+            }}
+            onPointerDown={slider.onPointerDown}
+            onPointerUp={slider.endGesture}
+            onPointerCancel={slider.endGesture}
             className="range"
           />
         </div>
@@ -365,8 +377,13 @@ export default function HistogramPanel() {
             min={1}
             max={255}
             value={white}
-            onChange={(e) => setLevels({ levelWhite: Math.max(Number(e.target.value), black + 8) })}
-            onPointerDown={() => pushHistoryNow("Ubah titik putih")}
+            onChange={(e) => {
+              const nilai = Math.max(Number(e.target.value), black + 8);
+              slider.change((commit) => setLevels({ levelWhite: nilai }, commit));
+            }}
+            onPointerDown={slider.onPointerDown}
+            onPointerUp={slider.endGesture}
+            onPointerCancel={slider.endGesture}
             className="range"
           />
         </div>
